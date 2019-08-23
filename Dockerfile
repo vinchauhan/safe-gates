@@ -4,6 +4,6 @@ WORKDIR /workspace
 # directory into the container that is building the Docker image.
 COPY . .
 RUN go build -o /myapp
-EXPOSE 8080
+EXPOSE 3000
 # When a container is run from this image, run the binary
 CMD /myapp
