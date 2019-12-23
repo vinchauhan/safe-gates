@@ -1,58 +1,59 @@
 package service
 
 import (
-	"fmt"
-	"github.com/dgraph-io/badger"
-	"github.com/vinchauhan/two-f-gates/internal/util"
+	"crypto/rand"
+	"log"
+	"io"
+	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 )
+//Passcodes is used to save passcode on db
+type Passcodes struct {
+	ID   string `gorethink:"id,omitempty"`
+	Code string `gorethink:"code,omitempty"`
+}
 
-func (s *Service) GeneratePasscodes(passcodes []string) error {
+//GeneratePasscodes will create 5 random passcode and store to db
+func (s *Service) GeneratePasscodes(passcodes []string) ([]string, error) {
 	//Store the passcodes in the db
-	txn := s.db.NewTransaction(true)
-	defer txn.Discard()
-
-	//Loop through the slice
-	for k, v := range passcodes {
-		err := txn.Set(util.IntToBytes(k), []byte(v))
-		if err != nil {
-			return err
+	codes := randomPasscodes()
+	for _, v := range codes {
+		log.Printf("Generated passcodes are : %s", v)
+		var data = map[string]interface{}{
+			"Code":  v,
 		}
+		log.Printf("Inserting code %s", data)
+		//Save then to database and then
+		_, err := r.DB("test").Table("passcodes").Insert(data).RunWrite(s.db)
+		if err != nil {
+			log.Fatal(err)
+		  }
 	}
 
-	// Commit the transaction and check for error.
-	if err := txn.Commit(); err != nil {
-		return err
-	}
-
-	return nil
+	return codes, nil
 }
 
 func (s *Service) GetPassCodes() ([]string, error) {
-	var passCodes []string
-	txn := s.db.NewTransaction(true)
-	defer txn.Discard()
+	return nil, nil
+}
 
-	err := s.db.View(func(txn *badger.Txn) error {
-		opts := badger.DefaultIteratorOptions
-		opts.PrefetchSize = 10
-		it := txn.NewIterator(opts)
-		defer it.Close()
-		for it.Rewind(); it.Valid(); it.Next() {
-			item := it.Item()
-			k := item.Key()
-			err := item.Value(func(v []byte) error {
-				fmt.Printf("key=%s, value=%s\n", k, v)
-				return nil
-			})
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-
-	if err != nil {
-		return passCodes, err
+func randomPasscodes() ([]string) {
+	var passcodes []string
+	for i := 0; i < 5; i++ {
+		s := encodeToString(6)
+		passcodes = append(passcodes, s)
 	}
-	return passCodes, nil
+	return passcodes
+}
+
+func encodeToString(max int) string {
+	var table = [...]byte{'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}
+	b := make([]byte, max)
+	n, err := io.ReadAtLeast(rand.Reader, b, max)
+	if n != max {
+		panic(err)
+	}
+	for i := 0; i < len(b); i++ {
+		b[i] = table[int(b[i])%len(table)]
+	}
+	return string(b)
 }

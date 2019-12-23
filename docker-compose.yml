@@ -1,0 +1,28 @@
+version: "3.5"
+services:
+  db:
+    container_name: rethinkdb_dev
+    image: rethinkdb
+    volumes: 
+      - ${PWD}/data:/data
+    ports: 
+      - 8080:8080
+      - 28015:28015
+      - 29015:29015
+    networks: 
+      - dev
+  app:
+    image: golang:1.13.5-alpine
+    volumes:
+      - .:/go/src/two-f-gates
+    ports: 
+      - 3000:3000
+    working_dir: /go/src/two-f-gates
+    command: go run main.go
+    environment: 
+      RETHINK_DB_URL: rethinkdb_dev:28015
+    networks: 
+      - dev
+networks: 
+  dev:
+    driver: bridge

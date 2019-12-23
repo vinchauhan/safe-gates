@@ -23,11 +23,12 @@ func (h *handler) generatePasswords(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	err := h.GeneratePasscodes(in.passcodes)
+	codes , err := h.GeneratePasscodes(in.passcodes)
 	if err != nil {
 		http.Error(resp, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	respond(resp, codes, http.StatusOK)
 }
 
 func (h *handler) getPasscodes(resp http.ResponseWriter, req *http.Request) {

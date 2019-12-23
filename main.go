@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/dgraph-io/badger"
 	"github.com/vinchauhan/two-f-gates/internal/handler"
 	"github.com/vinchauhan/two-f-gates/internal/service"
+	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 	"log"
 	"net/http"
+	"os"
 )
 
 const (
@@ -15,14 +16,18 @@ const (
 
 func main() {
 
-	// Open the Badger database located in the /tmp/badger directory.
-	// It will be created if it doesn't exist.
-	db, err := badger.Open(badger.DefaultOptions("/tmp/badger"))
+	log.Printf("BEGIN")
+	session, err := r.Connect(r.ConnectOpts{
+		Address: os.Getenv("RETHINK_DB_URL"),
+	})
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
-	s := service.New(db)
+	err = r.DB("test").TableDrop("passcodes").Exec(session)
+	err = r.DB("test").TableCreate("passcodes").Exec(session)
+
+	s := service.New(session)
 	h := handler.New(s)
 	addr := fmt.Sprintf(":%d", port)
 	log.Printf("Accepting connection on port %d", port)

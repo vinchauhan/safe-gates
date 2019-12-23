@@ -1,11 +1,14 @@
 package service
 
-import "github.com/dgraph-io/badger"
+import (
+	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
+)
 
 type Service struct {
-	db *badger.DB
+	db *r.Session
 }
 
-func New(db *badger.DB) *Service {
+//New Method
+func New(db *r.Session) *Service {
 	return &Service{db:db}
 }
