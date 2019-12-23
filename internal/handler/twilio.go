@@ -42,13 +42,15 @@ func (h *handler) twillioHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		//Which means the request from Twillio has Digits pressed by the human.
 		// Validate the passcode digits.
-		res, err := validatePasscode(passcode)
+		res, err := h.validatePasscode(passcode)
 		if err != nil {
 			fmt.Fprintf(w, applicationError, err)
 			return
 		}
 		if res {
 			fmt.Fprintf(w, accessGrantedMsg)
+		} else {
+			fmt.Fprintf(w, accessDenied)
 		}
 		//b, _ := httputil.DumpRequest(r, true)
 		//log.Printf("request is %s", b)
@@ -57,6 +59,12 @@ func (h *handler) twillioHandler(w http.ResponseWriter, r *http.Request) {
 	//fmt.Fprintf(w, welcomeMessage)
 }
 
-func validatePasscode(passcode string) (bool, error) {
-	return true, nil
+func (h *handler) validatePasscode(passcode string) (bool, error) {
+
+	//ValidatePasscode will check if password exists in DB
+	b, err := h.ValidatePasscode(passcode)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return b, nil
 }
