@@ -4,8 +4,34 @@ Content-Type: application/x-www-form-urlencoded
 CalledZip=85282&ApiVersion=2010-04-01&Called=%2B14807190198&CallStatus=ringing&CalledCity=TEMPE&From=%2B14808920803&ToState=AZ&CallerCountry=US&Direction=inbound&AccountSid=ACfb7ca69413210761a80e45f3b6c27ee5&CalledCountry=US&CallerCity=MESA&CallerState=AZ&ToCity=TEMPE&FromCountry=US&Caller=%2B14808920803&ToZip=85282&FromCity=MESA&CalledState=AZ&To=%2B14807190198&CallSid=CA481432130739253a761c0039ac123870&FromZip=85225&ToCountry=US&CallerZip=85225&FromState=AZ
 ###
 
-POST https://b5d1a666.ngrok.io/
+POST http://localhost:3000/passcodes
+Content-Type: application/json
+
+{
+    "passcodes":["123455","232323", "121212", "454545"]
+}
+###
+GET http://localhost:3000/passcodes
+
+###
+
+#With Digits
+POST http://localhost:3000/
+Content-Type: application/x-www-form-urlencoded
+
+CalledZip=85282&ApiVersion=2010-04-01&Called=%2B14807190198&CallStatus=ringing&CalledCity=TEMPE&From=%2B14808920803&ToState=AZ&Digits=123232&CallerCountry=US&Direction=inbound&AccountSid=ACfb7ca69413210761a80e45f3b6c27ee5&CalledCountry=US&CallerCity=MESA&CallerState=AZ&ToCity=TEMPE&FromCountry=US&Caller=%2B14808920803&ToZip=85282&FromCity=MESA&CalledState=AZ&To=%2B14807190198&CallSid=CA481432130739253a761c0039ac123870&FromZip=85225&ToCountry=US&CallerZip=85225&FromState=AZ
+###
+
+POST https://c435008b.ngrok.io/
 Content-Type: application/x-www-form-urlencoded
 
 CalledZip=85282&ApiVersion=2010-04-01&Called=%2B14807190198&CallStatus=ringing&CalledCity=TEMPE&From=%2B14808920803&ToState=AZ&CallerCountry=US&Direction=inbound&AccountSid=ACfb7ca69413210761a80e45f3b6c27ee5&CalledCountry=US&CallerCity=MESA&CallerState=AZ&ToCity=TEMPE&FromCountry=US&Caller=%2B14808920803&ToZip=85282&FromCity=MESA&CalledState=AZ&To=%2B14807190198&CallSid=CA481432130739253a761c0039ac123870&FromZip=85225&ToCountry=US&CallerZip=85225&FromState=AZ
+###
+
+#With Digits
+POST https://c435008b.ngrok.io/
+Content-Type: application/x-www-form-urlencoded
+
+CalledZip=85282&ApiVersion=2010-04-01&Called=%2B14807190198&CallStatus=ringing&CalledCity=TEMPE&From=%2B14808920803&ToState=AZ&Digits=123232&CallerCountry=US&Direction=inbound&AccountSid=ACfb7ca69413210761a80e45f3b6c27ee5&CalledCountry=US&CallerCity=MESA&CallerState=AZ&ToCity=TEMPE&FromCountry=US&Caller=%2B14808920803&ToZip=85282&FromCity=MESA&CalledState=AZ&To=%2B14807190198&CallSid=CA481432130739253a761c0039ac123870&FromZip=85225&ToCountry=US&CallerZip=85225&FromState=AZ
+
 ###
