@@ -8,22 +8,25 @@ import (
 
 //<Record timeout="5"></Record>
 const (
-	welcomeMessage = `<Response>
-						  <Say voice="alice">Welcome to Chauhan Family. Please enter passcode</Say>
+	welcomeMessage = `<?xml version="1.0" encoding="UTF-8"?>
+						<Response>
+						  <Say voice="alice">Please enter passcode</Say>
 						  <Gather finishOnKey="#" timeout="5"></Gather>
 					  </Response>`
 
-	accessGrantedMsg = `<Response>
-						 	<Say voice="alice">Access Granted</Say>
-						 </Response>`
+	accessGrantedMsg = `<?xml version="1.0" encoding="UTF-8"?>
+							<Response>
+								<Say voice="alice">Access Granted</Say>
+								<Play digits="9"></Play>
+						 	</Response>`
 
 	accessDenied = `<Response>
-						 	<Say voice="alice">Access Denied.!</Say>
-						 </Response>`
+						<Say voice="alice">Access Denied.!</Say>
+					</Response>`
 
 	applicationError = `<Response>
 						 	<Say voice="alice">Application Error occurred : %v</Say>
-						 </Response>`
+						</Response>`
 )
 
 func (h *handler) twillioHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,11 +55,7 @@ func (h *handler) twillioHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			fmt.Fprintf(w, accessDenied)
 		}
-		//b, _ := httputil.DumpRequest(r, true)
-		//log.Printf("request is %s", b)
-		return
 	}
-	//fmt.Fprintf(w, welcomeMessage)
 }
 
 func (h *handler) validatePasscode(passcode string) (bool, error) {
