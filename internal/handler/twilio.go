@@ -10,9 +10,10 @@ import (
 const (
 	welcomeMessage = `<?xml version="1.0" encoding="UTF-8"?>
 						<Response>
-						  <Say voice="alice">Please enter passcode</Say>
-						  <Gather finishOnKey="#" timeout="5"></Gather>
-					  </Response>`
+							<Say voice="alice">Please enter passcode</Say>
+						  	<Gather input="dtmf" numDigits="6" finishOnKey="#" timeout="5">
+						  	</Gather>
+					    </Response>`
 
 	accessGrantedMsg = `<?xml version="1.0" encoding="UTF-8"?>
 							<Response>
