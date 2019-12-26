@@ -1,0 +1,11 @@
+apiVersion: skaffold/v2alpha1
+kind: Config
+metadata:
+  name: two-f-gates
+build:
+  artifacts:
+  - image: two-f-gates
+deploy:
+  kubectl:
+    manifests:
+    - kubernetes/deploy.yaml

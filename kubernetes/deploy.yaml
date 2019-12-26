@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: two-f-gates
+spec:
+  selector:
+    matchLabels:
+      app: two-f-gates
+  template:
+    metadata:
+      labels:
+        app: two-f-gates
+    spec:
+      containers:
+      - name: two-f-gates
+        image: two-f-gates:1.0-snapshot
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000

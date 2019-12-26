@@ -7,3 +7,12 @@ RUN go build -o /myapp
 EXPOSE 3000
 # When a container is run from this image, run the binary
 CMD /myapp
+
+# FROM golang as builder
+# WORKDIR /workspace
+# COPY . .
+# RUN go build -o /myapp
+
+# FROM alpine:3.10
+# COPY --from=builder /myapp .
+# CMD ["./myapp"]
