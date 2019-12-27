@@ -19,5 +19,15 @@ func New(s *service.Service) http.Handler {
 	api.HandleFunc("POST", "/passcodes", h.generatePasswords)
 	api.HandleFunc("GET", "/passcodes", h.getPasscodes)
 	// api.HandleFunc("POST", "/passcode/validate", h.validatePasscode)
-	return api
+
+	//Custom fileServer with own fileSystem
+	fs := http.FileServer(&spaFileSystem{http.Dir("web/static")})
+
+	
+	r := way.NewRouter()
+	r.Handle("*", "/api...", http.StripPrefix("/api", h.withAuth(api)))
+	r.Handle("GET", "/...", fs)
+	
+	return r
+
 }
