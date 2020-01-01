@@ -4,7 +4,7 @@ services:
     container_name: rethinkdb_dev
     image: rethinkdb
     volumes: 
-      - ${PWD}/data:/data
+      - ./data:/data
     ports: 
       - 8080:8080
       - 28015:28015
