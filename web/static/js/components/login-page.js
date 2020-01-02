@@ -5,7 +5,7 @@ template.innerHTML = `
     <div class="container">
         <h1>Login</h1>
         <form id="login-form">
-            <input type="text" placeholder="Email" autocomplete="email" value="divya.vineet@gmail.com" required>
+            <input type="text" placeholder="Email" autocomplete="email" required>
             <button>Login</button>
         </form>
     </div>

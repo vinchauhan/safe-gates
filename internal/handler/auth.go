@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/vinchauhan/two-f-gates/internal/service"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -20,13 +22,25 @@ func (h *handler) withAuth(next http.Handler) http.Handler {
 				token = a[7:]
 			}
 		}
-
 		if token == "" {
 			next.ServeHTTP(w, r)
 			return
 		}
+		log.Printf("Token is : %s", token)
+		uid, err := h.AuthUserIDFromToken(token)
+
+		log.Printf("UID is : %s", uid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
+
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, service.KeyAuthUserID, uid)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
+
 
 func (h *handler) devLogin(w http.ResponseWriter, r *http.Request) {
 	var in loginInput

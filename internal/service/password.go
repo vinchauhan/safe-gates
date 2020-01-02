@@ -17,6 +17,10 @@ type Passcode struct {
 
 //GeneratePasscodes will create 5 random passcode and store to db
 func (s *Service) GeneratePasscodes(ctx context.Context, username string) ([]string, error) {
+	_, ok := ctx.Value(KeyAuthUserID).(string)
+	if !ok {
+		return nil, ErrUnauthenticated
+	}
 	//Store the passcodes in the db
 	codes := randomPasscodes()
 	for _, v := range codes {
@@ -40,6 +44,10 @@ func (s *Service) GeneratePasscodes(ctx context.Context, username string) ([]str
 func (s *Service) GetPassCodes(ctx context.Context, username string) ([]Passcode, error) {
 	log.Printf("Getting passcodes for username : %s", username)
 	var out []Passcode
+	_, ok := ctx.Value(KeyAuthUserID).(string)
+	if !ok {
+		return out, ErrUnauthenticated
+	}
 	cur, err := r.DB("test").Table("passcodes").Filter(func(uu r.Term) r.Term {
 		return uu.Field("username").Eq(username)
 	}).Run(s.db)
@@ -85,8 +93,7 @@ func encodeToString(max int) string {
 
 //ValidatePasscode will validate the passcode on db
 func (s *Service) ValidatePasscode(passcode string) (bool, error) {
-
-	var out Passcodes
+	var out Passcode
 	var outBool = false
 	//Call the DB to check if passcode exists.
 	cur, err := r.DB("test").Table("passcodes").Filter(func(uu r.Term) r.Term {

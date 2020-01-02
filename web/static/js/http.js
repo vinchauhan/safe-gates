@@ -29,16 +29,11 @@ async function parseResponse(res) {
  * @return Promise<Response>
  */
 export function doGet(url, headers) {
-    const request = new Request(url, {
+    return fetch(url, {
         method: 'GET',
-        mode: "no-cors",
-        headers: Object.assign(defaultHeaders(), headers)
-    })
-    return fetch(request).then(parseResponse)
-    // return fetch(url, {
-    //     method: 'GET',
-    //     headers: Object.assign(defaultHeaders(), headers),
-    // }).then(parseResponse)
+        mode: "cors",
+        headers: Object.assign(defaultHeaders(), headers),
+    }).then(parseResponse)
 }
 
 export function doPost(url, body, headers) {

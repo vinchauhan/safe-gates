@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/matryer/way"
+	"github.com/vinchauhan/two-f-gates/internal/service"
 	"net/http"
 )
 
@@ -25,8 +26,12 @@ func (h *handler) getPasscodes(resp http.ResponseWriter, req *http.Request) {
 
 	//Sets the passcodes received as slice of string in the db
 	out, err := h.GetPassCodes(ctx, username)
+	if err == service.ErrUnauthenticated {
+		http.Error(resp, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		return
+	}
 	if err != nil {
-		http.Error(resp, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		http.Error(resp, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 	respond(resp, out, http.StatusOK)

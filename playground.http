@@ -6,10 +6,11 @@ CalledZip=85282&ApiVersion=2010-04-01&Called=%2B14807190198&CallStatus=ringing&C
 
 POST http://localhost:3000/api/passcodes/dbhagcha
 Content-Type: application/json
+Authorization: Bearer 1jVKOPL2C3A0cgff76crCiaFbXe1Y9VUnNpVe5a5MgePDHHNJAU61xm5LM93sYntQzfOMT7s
 
 ###
 GET http://localhost:3000/api/passcodes/dbhagcha
-
+Authorization: Bearer 1jVKOPL2C3A0cgff76crCiaFbXe1Y9VUnNpVe5a5MgePDHHNJAU61xm5LM93sYntQzfOMT7s
 ###
 
 #With Digits
