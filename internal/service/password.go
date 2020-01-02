@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"crypto/rand"
 	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 	"io"
@@ -8,18 +9,20 @@ import (
 )
 
 //Passcodes is used to save passcode on db
-type Passcodes struct {
-	ID   string `gorethink:"id,omitempty"`
-	Code string `gorethink:"code,omitempty"`
+type Passcode struct {
+	ID   string `json:"id,omitempty"`
+	Code string `json:"code,omitempty"`
+	Username string `json:"username,omitempty"`
 }
 
 //GeneratePasscodes will create 5 random passcode and store to db
-func (s *Service) GeneratePasscodes() ([]string, error) {
+func (s *Service) GeneratePasscodes(ctx context.Context, username string) ([]string, error) {
 	//Store the passcodes in the db
 	codes := randomPasscodes()
 	for _, v := range codes {
 		log.Printf("Generated passcodes are : %s", v)
 		var data = map[string]interface{}{
+			"username": username,
 			"Code": v,
 		}
 		log.Printf("Inserting code %s", data)
@@ -34,9 +37,18 @@ func (s *Service) GeneratePasscodes() ([]string, error) {
 }
 
 //GetPassCodes is used to list all pascodes to the UI
-func (s *Service) GetPassCodes() ([]Passcodes, error) {
-	var out []Passcodes
-	cur, err := r.DB("test").Table("passcodes").Run(s.db)
+func (s *Service) GetPassCodes(ctx context.Context, username string) ([]Passcode, error) {
+	log.Printf("Getting passcodes for username : %s", username)
+	var out []Passcode
+	cur, err := r.DB("test").Table("passcodes").Filter(func(uu r.Term) r.Term {
+		return uu.Field("username").Eq(username)
+	}).Run(s.db)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cur.Close()
+
 	if err != nil {
 		return out, err
 	}

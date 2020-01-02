@@ -2,12 +2,17 @@ package service
 
 import (
 	"context"
+	"github.com/hako/branca"
 	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 	"log"
 	"strings"
 	"time"
 )
 
+var (
+	tokenLifespan            = time.Hour * 24 * 14
+	verificationCodeLifespan = time.Minute * 15
+)
 // DevLoginOutput response.
 type DevLoginOutput struct {
 	User      User      `json:"user"`
@@ -37,6 +42,7 @@ func (s *Service) DevLogin(ctx context.Context, email string) (DevLoginOutput, e
 		// If row was found - Create a token
 		out.Token, err = s.codec().EncodeToString(userModel.ID)
 		out.User = userModel
+		out.ExpiresAt = time.Now().Add(tokenLifespan)
 		return out, nil
 	}
 	if cur.Err() != nil {
@@ -44,4 +50,10 @@ func (s *Service) DevLogin(ctx context.Context, email string) (DevLoginOutput, e
 	}
 
 	return out, ErrUserNotFound
+}
+
+func (s *Service) codec() *branca.Branca {
+	cdc := branca.NewBranca(s.tokenKey)
+	cdc.SetTTL(uint32(tokenLifespan.Seconds()))
+	return cdc
 }

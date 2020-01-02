@@ -1,9 +1,11 @@
+import {doPost} from "../http.js";
+
 const template = document.createElement('template')
 template.innerHTML = `
     <div class="container">
         <h1>Login</h1>
         <form id="login-form">
-            <input type="text" placeholder="Email" autocomplete="email" value="John.Doe@gmail.com" required>
+            <input type="text" placeholder="Email" autocomplete="email" value="divya.vineet@gmail.com" required>
             <button>Login</button>
         </form>
     </div>
@@ -12,7 +14,6 @@ template.innerHTML = `
 export default async function renderLoginPage() {
     const page = /** @type {DocumentFragment}*/template.content.cloneNode(true)
     const loginForm = /** @type {HTMLFormElement} */ page.getElementById('login-form')
-
     loginForm.addEventListener('submit', onLoginFormSubmit)
     return page
 }
@@ -26,5 +27,27 @@ async function onLoginFormSubmit(ev) {
     const input = form.querySelector('input')
     const button = form.querySelector('button')
     const email = input.value
-    console.log(email)
+    input.disabled = true
+    button.disabled = true
+
+    try {
+        const out = await http.devLogin(email)
+        localStorage.setItem('token', out.token)
+        localStorage.setItem('expires_at', typeof out.expiresAt === 'string'
+        ? out.expiresAt
+        : out.expiresAt.toJSON())
+        localStorage.setItem('auth_user', JSON.stringify(out.user))
+        location.reload()
+    } catch (e) {
+        console.error(e)
+        alert(e.message)
+        setTimeout(input.focus)
+    } finally {
+        input.disabled = true
+        button.disabled = true
+    }
+}
+
+const http = {
+    devLogin: email => doPost('/api/dev_login', {email})
 }

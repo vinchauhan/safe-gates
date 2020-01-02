@@ -572,3 +572,9 @@ header .profile-link {
     height: .5rem;
     border-radius: 50%;
 }
+
+article {
+    display: flex;
+    margin: auto;
+    padding: inherit;
+}

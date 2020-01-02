@@ -53,7 +53,7 @@ func (s *Service) CreateUser(ctx context.Context, email , username string) error
 	}
 	//In RethinkDB we need to do two operations to see if the user exists first and if not then create.
 
-	//Call the DB to check if passcode exists.
+	//Call the DB to check if username exists.
 	cur, err := r.DB("test").Table("users").Filter(func(uu r.Term) r.Term {
 		return uu.Field("username").Eq(username)
 	}).Run(s.db)

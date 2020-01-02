@@ -15,9 +15,22 @@ export function getAuthUser() {
     if(isNaN(expiresAt.valueOf()) || expiresAt <= new Date()) {
         return null
     }
-    
+    try {
+        return JSON.parse(authUserRaw)
+    } catch (e) {}
+    return null
 }
 
 export function isAuthenticated() {
     return getAuthUser() !== null
+}
+
+/**
+ *
+ * @param {function} fn1
+ * @param {function} fn2
+ * @returns {function(...[*]): *}
+ */
+export function gaurd(fn1, fn2) {
+    return(...args) => isAuthenticated() ? fn1(...args) : fn2(...args)
 }

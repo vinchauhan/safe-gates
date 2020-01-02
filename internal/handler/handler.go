@@ -20,8 +20,8 @@ func New(s *service.Service, origin url.URL) http.Handler {
 	api := way.NewRouter()
 	api.HandleFunc("POST", "/user", h.createUser)
 	api.HandleFunc("POST", "/twillio", h.twillioHandler)
-	api.HandleFunc("POST", "/passcodes", h.generatePasswords)
-	api.HandleFunc("GET", "/passcodes", h.getPasscodes)
+	api.HandleFunc("POST", "/passcodes/:username", h.generatePasswords)
+	api.HandleFunc("GET", "/passcodes/:username", h.getPasscodes)
 	api.HandleFunc("POST", "/dev_login", h.devLogin)
 	// api.HandleFunc("POST", "/passcode/validate", h.validatePasscode)
 
